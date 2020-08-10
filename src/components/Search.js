@@ -1,12 +1,22 @@
 import React from "react";
-import { getDogImagesByBreed } from "../utils/api";
+import { getDogImagesByBreed, getBreedList } from "../utils/api";
 
 class Search extends React.Component { 
 
   state = {
     results: [],
-    value: ""
+    value: "",
+    breedList: []
   };
+
+  async componentDidMount() {
+    const breedList = await getBreedList();
+
+    console.log('breedList:', breedList);
+    
+
+    this.setState({breedList: breedList});
+  }
 
   handleInputChange = (event) => {
     this.setState({value: event.target.value});
@@ -28,14 +38,27 @@ class Search extends React.Component {
     })
   }
 
+  getBreedSelectOptions(breedList) {
+    return breedList.map((breed) => <option value={breed} key={breed}/>);
+  }
+
   render() {
     return (
       <div>
-        <div>
-          <label htmlFor="breed-input">Search Dog by Breed: </label>
-          <input name="breed-input" value={this.state.value} onChange={this.handleInputChange} />
-          <button onClick={this.showDogImages}>Search</button>
-        </div>
+        <input
+          value={this.state.value}
+          onChange={this.handleInputChange}
+          name="breed"
+          list="breeds"
+          type="text"
+          className="form-control"
+          placeholder="Type in a dog breed to begin"
+          id="breed"
+        />
+        <datalist id="breeds">
+          {this.getBreedSelectOptions(this.state.breedList)}
+        </datalist>
+        <button onClick={this.showDogImages}>Search</button>
 
         <ul className="dogImageList">
           {this.getDogImageList(this.state.results)}

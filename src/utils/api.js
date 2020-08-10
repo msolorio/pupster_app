@@ -9,3 +9,20 @@ export async function getDogImagesByBreed(breed) {
   }
 }
 
+export async function getBreedList() {
+  try {
+    const response = await axios.get("https://dog.ceo/api/breeds/list");
+    return response.data.message;
+  } catch(error) {
+    console.error("encountered an error in getBreedList");
+  }
+}
+
+export async function getRandomDogImage() {
+  try {
+    const response = await axios.get("https://dog.ceo/api/breeds/image/random");
+    return response.data.message;
+  } catch(error) {
+    console.error("encountered an error in getRandomDogImage");
+  }
+}
