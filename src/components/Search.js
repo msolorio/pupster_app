@@ -12,10 +12,7 @@ class Search extends React.Component {
   async componentDidMount() {
     const breedList = await getBreedList();
 
-    console.log('breedList:', breedList);
-    
-
-    this.setState({breedList: breedList});
+    this.setState({breedList});
   }
 
   handleInputChange = (event) => {

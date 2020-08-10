@@ -23,7 +23,9 @@ class Discover extends React.Component {
   // if ahead of the first image, decrement currentImageIndex by 1
   showPreviousImage = () => {
     if (this.state.currentImageIndex > 0) {
-      this.setState({currentImageIndex: this.state.currentImageIndex - 1});
+      this.setState((prevState) => {
+        return {currentImageIndex: prevState.currentImageIndex - 1};
+      });
     }
   }
 
@@ -31,13 +33,27 @@ class Discover extends React.Component {
   showNextImage = async () => {
     await this.addRandomDogImage();
 
-    this.setState({currentImageIndex: this.state.currentImageIndex + 1});
+    this.setState((prevState) => {
+      return {currentImageIndex: prevState.currentImageIndex + 1};
+    });
+  }
+
+  showBackButton() {
+    const backButton = (
+      <button
+        className="button-back"
+        onClick={this.showPreviousImage}>
+        back
+      </button>
+    );
+
+    return this.state.currentImageIndex > 0 && backButton;
   }
 
   render() {
     return (
       <div>
-        <button className="button-back" onClick={this.showPreviousImage}>back</button>
+        {this.showBackButton()}
         <img
           src={this.state.dogImageList[this.state.currentImageIndex]}
           alt="random dog"
