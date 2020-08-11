@@ -1,12 +1,14 @@
 import React from "react";
 import { getDogImagesByBreed, getBreedList } from "../utils/api";
+import DogImageList from "./DogImageList";
 
 class Search extends React.Component { 
 
   state = {
     results: [],
     value: "",
-    breedList: []
+    breedList: [],
+    showError: false
   };
 
   async componentDidMount() {
@@ -21,25 +23,34 @@ class Search extends React.Component {
 
   showDogImages = async () => {
     const dogImageUrls = await getDogImagesByBreed(this.state.value);
-
-    this.setState({results: dogImageUrls});
-  }
-
-  getDogImageList(results) {
-    return results.map((url) => {
-      return (
-        <li key={url}>
-          <img src={url} alt={this.state.value} />
-        </li>
-      );
-    })
+    
+    if (dogImageUrls) {
+      this.setState({results: dogImageUrls, showError: false});
+    } else {
+      this.setState({showError: true});
+    }
   }
 
   getBreedSelectOptions(breedList) {
     return breedList.map((breed) => <option value={breed} key={breed}/>);
   }
 
+  getSearchResult(showError) {
+    if (showError) {
+      return <div>No results found</div>;
+
+    } else {
+      return (
+        <DogImageList
+          results={this.state.results}
+          dogBreedName={this.state.value}
+        />
+      );
+    }
+  }
+
   render() {
+  
     return (
       <div>
         <input
@@ -56,10 +67,7 @@ class Search extends React.Component {
           {this.getBreedSelectOptions(this.state.breedList)}
         </datalist>
         <button onClick={this.showDogImages}>Search</button>
-
-        <ul className="dogImageList">
-          {this.getDogImageList(this.state.results)}
-        </ul>
+        {this.getSearchResult(this.state.showError)}
       </div>    
     );
   }
